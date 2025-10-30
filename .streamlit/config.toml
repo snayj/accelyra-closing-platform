@@ -1,0 +1,10 @@
+[theme]
+# Clean, professional light theme
+primaryColor="#2563eb"  # Blue for interactive elements
+backgroundColor="#ffffff"  # Pure white background
+secondaryBackgroundColor="#f8fafc"  # Light gray for cards
+textColor="#0f172a"  # Dark gray/black for text
+font="sans serif"
+
+[server]
+headless = true
