@@ -492,3 +492,55 @@ async def get_transaction_progress(
     logger.info(f"Progress for {transaction_id}: {progress['percent_complete']}% complete")
 
     return progress
+
+
+@router.delete("/transactions/{transaction_id}", response_model=dict)
+async def delete_transaction(
+    transaction_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a transaction and all associated data.
+
+    This will cascade delete:
+    - All tasks associated with the transaction
+    - Stage history
+    - Transaction record
+
+    **Warning**: This operation cannot be undone.
+
+    **Logging**: Records transaction deletion for audit trail.
+    """
+    logger.info("=" * 60)
+    logger.info(f"DELETING TRANSACTION - {transaction_id}")
+    logger.info("=" * 60)
+
+    transaction = db.query(Transaction).filter(Transaction.id == transaction_id).first()
+
+    if not transaction:
+        logger.warning(f"Transaction not found: {transaction_id}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Transaction {transaction_id} not found"
+        )
+
+    # Delete associated tasks first
+    tasks = db.query(Task).filter(Task.transaction_id == transaction_id).all()
+    for task in tasks:
+        db.delete(task)
+
+    logger.info(f"Deleted {len(tasks)} associated tasks")
+
+    # Delete transaction
+    property_address = transaction.property_address
+    db.delete(transaction)
+    db.commit()
+
+    logger.info(f"✓ Transaction deleted: {transaction_id} ({property_address})")
+    logger.info("=" * 60)
+
+    return {
+        "success": True,
+        "message": f"Transaction {transaction_id} deleted successfully",
+        "transaction_id": transaction_id
+    }

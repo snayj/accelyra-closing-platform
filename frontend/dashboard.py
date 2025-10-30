@@ -7,12 +7,14 @@ Simple, functional dashboard with readable design.
 import streamlit as st
 import requests
 from datetime import datetime
+import os
 
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
 
-API_BASE_URL = "http://localhost:8000/api/v1"
+# Use environment variable for API URL, fallback to localhost for local dev
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000/api/v1")
 
 # Page config - use default Streamlit theme
 st.set_page_config(
@@ -74,6 +76,195 @@ STAGE_NAMES = {
 # ============================================================================
 # PAGE: OVERVIEW
 # ============================================================================
+
+def show_welcome():
+    """Welcome page with usage instructions."""
+
+    st.title("🏠 Welcome to Accelyra Closing Platform")
+    st.write("*AI-Driven Real Estate Transaction Simulator*")
+    st.divider()
+
+    # Quick start
+    st.subheader("🚀 Quick Start Guide")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### 1️⃣ Run a Simulation")
+        st.write("Navigate to **Transaction Simulator** to:")
+        st.write("- Choose a transaction scenario")
+        st.write("- Set property details and price")
+        st.write("- Watch the transaction progress through 7 stages")
+        st.write("- See realistic blocking conditions and outcomes")
+
+    with col2:
+        st.markdown("### 2️⃣ Review Results")
+        st.write("Go to **Transaction History** to:")
+        st.write("- View all tested transactions")
+        st.write("- Filter by stage or sort by price/date")
+        st.write("- Examine detailed stage progressions")
+        st.write("- Clear history when needed")
+
+    st.divider()
+
+    # Available scenarios
+    st.subheader("📋 Available Transaction Scenarios")
+
+    st.write("Test different real-world situations to see how the platform handles them:")
+
+    scenarios = [
+        {
+            "emoji": "✅",
+            "name": "Perfect Transaction",
+            "description": "All checks pass, smooth progression through all 7 stages",
+            "outcome": "Closes successfully in 7-10 days",
+            "key_points": [
+                "Strong buyer credit (750 score)",
+                "Adequate funds verified ($110k+ liquid assets)",
+                "Clear title with no liens",
+                "Property appraises at contract price"
+            ]
+        },
+        {
+            "emoji": "💰",
+            "name": "Insufficient Funds",
+            "description": "Buyer cannot qualify due to inadequate funds",
+            "outcome": "❌ Blocked at Stage 1 (Offer Accepted)",
+            "key_points": [
+                "Pre-approval too low for purchase price",
+                "Insufficient funds for 20% down payment",
+                "Earnest money check bounces",
+                "Options: gift funds, lower price, or terminate"
+            ]
+        },
+        {
+            "emoji": "📋",
+            "name": "Missing Documentation",
+            "description": "Transaction stalls due to incomplete paperwork",
+            "outcome": "⚠️ Stalled at Stage 3 (Underwriting)",
+            "key_points": [
+                "Buyer unresponsive to document requests",
+                "Missing pay stubs, W-2s, tax returns",
+                "5 days overdue on submissions",
+                "Risk: lender may deny if not provided quickly"
+            ]
+        },
+        {
+            "emoji": "🏚️",
+            "name": "Title Issue",
+            "description": "Property has liens discovered during title search",
+            "outcome": "❌ Blocked at Stage 2 (Title Search)",
+            "key_points": [
+                "Mechanic's lien from previous work",
+                "Delinquent property taxes",
+                "Undisclosed utility easement",
+                "Must clear liens before proceeding"
+            ]
+        },
+        {
+            "emoji": "🔍",
+            "name": "Failed Inspection",
+            "description": "Major property defects found during inspection",
+            "outcome": "❌ Blocked at Stage 3 (Underwriting)",
+            "key_points": [
+                "Foundation, roof, electrical issues",
+                "$82k+ in estimated repairs",
+                "Property value drops significantly",
+                "Lender won't fund in current condition"
+            ]
+        },
+        {
+            "emoji": "⚖️",
+            "name": "Low Appraisal",
+            "description": "Property appraises below contract price",
+            "outcome": "⚠️ Blocked at Stage 3 (Underwriting)",
+            "key_points": [
+                "Appraisal 12% below purchase price",
+                "Lender won't loan on inflated value",
+                "Buyer needs extra cash or price reduction",
+                "Options: renegotiate or terminate"
+            ]
+        }
+    ]
+
+    for scenario in scenarios:
+        with st.expander(f"{scenario['emoji']} **{scenario['name']}** - {scenario['description']}"):
+            st.markdown(f"**Outcome:** {scenario['outcome']}")
+            st.write("")
+            st.write("**Key Points:**")
+            for point in scenario['key_points']:
+                st.write(f"• {point}")
+
+    st.divider()
+
+    # The 7 stages
+    st.subheader("🔄 The 7 Closing Stages")
+
+    stages_info = [
+        ("1. Offer Accepted", "Escrow opened, earnest money deposited", "1-2 days"),
+        ("2. Title Search", "Property ownership and liens verified", "2-3 days"),
+        ("3. Underwriting", "Lender review, credit check, inspection", "3-5 days"),
+        ("4. Clear to Close", "All conditions satisfied, ready for closing", "1 day"),
+        ("5. Final Documents", "Closing disclosure and documents prepared", "1-2 days"),
+        ("6. Funding & Signing", "Documents signed, funds wired", "1-2 days"),
+        ("7. Recording Complete", "Deed recorded, transaction closed", "1 day")
+    ]
+
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+        for stage, description, timeline in stages_info:
+            st.markdown(f"**{stage}**")
+            st.text(f"  {description}")
+
+    with col2:
+        st.markdown("**Timeline**")
+        for _, _, timeline in stages_info:
+            st.text(f"{timeline}")
+
+    st.write("")
+    st.info("**Total Platform Timeline:** 7-13 days (vs. traditional 30-45 days)")
+
+    st.divider()
+
+    # Tips for testing
+    st.subheader("💡 Tips for Testing")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("**Do's:**")
+        st.write("✓ Test each scenario to understand failure points")
+        st.write("✓ Adjust purchase price to see dynamic calculations")
+        st.write("✓ Read the detailed explanations at each stage")
+        st.write("✓ Review 'Next Steps' for resolution options")
+
+    with col2:
+        st.markdown("**Understanding Results:**")
+        st.write("• 🟢 Green = Stage passed, can advance")
+        st.write("• 🔴 Red = Blocked, cannot proceed")
+        st.write("• 🟡 Yellow = Warning, delays expected")
+        st.write("• Check History page for all details")
+
+    st.divider()
+
+    # Platform value
+    st.subheader("🎯 Platform Value Proposition")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("Closing Time", "7-10 days", "-70% vs traditional")
+
+    with col2:
+        st.metric("Cost Reduction", "60%+", "Operational savings")
+
+    with col3:
+        st.metric("Compliance", "100%", "Fully auditable")
+
+    st.write("")
+    st.success("**Ready to test?** Click **Transaction Simulator** in the sidebar to begin!")
+
 
 def show_about():
     """About page with company vision."""
@@ -556,8 +747,37 @@ def show_transaction_history():
     else:  # Low to High
         filtered_txns = sorted(filtered_txns, key=lambda x: x.get("purchase_price", 0))
 
-    # Display count
-    st.write(f"**Showing {len(filtered_txns)} of {len(transactions)} transactions**")
+    # Display count and clear button
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.write(f"**Showing {len(filtered_txns)} of {len(transactions)} transactions**")
+    with col2:
+        # Check if we're in confirmation mode
+        is_confirming = st.session_state.get('confirm_clear', False)
+        button_label = "⚠️ CONFIRM DELETE" if is_confirming else "🗑️ Clear All History"
+        button_type = "primary" if is_confirming else "secondary"
+
+        if st.button(button_label, type=button_type, help="Delete all transactions from the database", key=f"clear_btn_{is_confirming}"):
+            if is_confirming:
+                # Actually delete
+                try:
+                    for txn in transactions:
+                        requests.delete(f"{API_BASE_URL}/transactions/{txn['id']}", timeout=5)
+                    st.success("All transaction history cleared!")
+                    st.session_state.confirm_clear = False
+                    st.cache_data.clear()
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error clearing history: {e}")
+                    st.session_state.confirm_clear = False
+            else:
+                # Ask for confirmation
+                st.session_state.confirm_clear = True
+                st.rerun()
+
+    if st.session_state.get('confirm_clear'):
+        st.warning("⚠️ **Are you sure?** This will delete ALL transaction data. Click the button above again to confirm.")
+
     st.write("")
 
     # Display transactions
@@ -1591,12 +1811,13 @@ def main():
 
     # Page selection
     if "page" not in st.session_state:
-        st.session_state.page = "simulator"
+        st.session_state.page = "welcome"
 
     page = st.sidebar.radio(
         "Select Page",
-        ["simulator", "history", "about"],
+        ["welcome", "simulator", "history", "about"],
         format_func=lambda x: {
+            "welcome": "🏠 Welcome",
             "simulator": "🎬 Transaction Simulator",
             "history": "📋 Transaction History",
             "about": "ℹ️ About Accelyra"
@@ -1617,11 +1838,10 @@ def main():
     except:
         st.sidebar.error("❌ Offline")
 
-    st.sidebar.divider()
-    st.sidebar.info("**About:** Real Estate Closing Platform - Reduces closing time from 42 to 13 days")
-
     # Render page
-    if page == "simulator":
+    if page == "welcome":
+        show_welcome()
+    elif page == "simulator":
         show_transaction_simulator()
     elif page == "history":
         show_transaction_history()
