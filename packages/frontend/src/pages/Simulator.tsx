@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import Card, { CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import StageProgress from '../components/shared/StageProgress';
 import StageDetails from '../components/shared/StageDetails';
-import ActivityLog, { ActivityEntry } from '../components/shared/ActivityLog';
+import ActivityLog, { type ActivityEntry } from '../components/shared/ActivityLog';
 import { TransactionStage } from '../types';
 import { formatCurrency } from '../lib/utils';
 

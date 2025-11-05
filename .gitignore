@@ -72,3 +72,13 @@ htmlcov/
 *.tmp
 *.bak
 *.swp
+
+# Node.js
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# Build outputs
+packages/*/dist/
+packages/*/build/
