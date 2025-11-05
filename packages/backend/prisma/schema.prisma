@@ -1,0 +1,317 @@
+// Accelyra Closing Platform - Database Schema
+// Prisma schema for real estate transaction management
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum TransactionStage {
+  OFFER_ACCEPTED          // Stage 1: Offer accepted, escrow opened
+  TITLE_SEARCH            // Stage 2: Title search ordered
+  UNDERWRITING            // Stage 3: Lender underwriting, inspections
+  CLEAR_TO_CLOSE          // Stage 4: All conditions met
+  FINAL_DOCUMENTS         // Stage 5: Final documents prepared
+  FUNDING_SIGNING         // Stage 6: Funding and signing
+  RECORDING_COMPLETE      // Stage 7: Recording complete
+}
+
+enum EarnestMoneyStatus {
+  PENDING     // Not yet deposited
+  DEPOSITED   // Deposited but not cleared
+  CLEARED     // Funds cleared and verified
+  REFUNDED    // Returned to buyer (deal fell through)
+  APPLIED     // Applied to down payment at closing
+}
+
+enum TaskType {
+  DOCUMENT_UPLOAD
+  DOCUMENT_SIGN
+  DOCUMENT_REVIEW
+  PAYMENT
+  VERIFICATION
+  INSPECTION
+  APPROVAL
+  NOTIFICATION
+  OTHER
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+  OVERDUE
+}
+
+enum TaskPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum PartyRole {
+  BUYER
+  SELLER
+  BUYER_AGENT
+  SELLER_AGENT
+  LOAN_OFFICER
+  TITLE_OFFICER
+  ESCROW_OFFICER
+  CLOSING_COORDINATOR
+  INSPECTOR
+  APPRAISER
+}
+
+enum DocumentType {
+  PURCHASE_AGREEMENT
+  PROOF_OF_FUNDS
+  PRE_APPROVAL_LETTER
+  TITLE_REPORT
+  HOME_INSPECTION
+  APPRAISAL
+  CLOSING_DISCLOSURE
+  DEED
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING_UPLOAD
+  UPLOADED
+  PROCESSING
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+// ============================================================================
+// MODELS
+// ============================================================================
+
+model Transaction {
+  id String @id // e.g., "TXN-2025-001"
+
+  // Property Information
+  propertyAddress    String
+  propertyType       String? // "single_family", "condo", "townhouse"
+  propertySqft       Int?
+  propertyBedrooms   Int?
+  propertyBathrooms  Float?
+  propertyYearBuilt  Int?
+
+  // Financial Details
+  purchasePrice Float
+  downPayment   Float?
+  loanAmount    Float?
+
+  // Earnest Money Tracking
+  earnestMoneyAmount      Float?
+  earnestMoneyStatus      EarnestMoneyStatus @default(PENDING)
+  earnestMoneyDepositedAt DateTime?
+  earnestMoneyClearedAt   DateTime?
+
+  // Funds Verification
+  fundsVerified   Boolean   @default(false)
+  fundsVerifiedAt DateTime?
+  fundsVerifiedBy String?
+
+  // Workflow State Management
+  currentStage    TransactionStage @default(OFFER_ACCEPTED)
+  stageHistory    Json             @default("[]") // Array of stage transitions
+  stageStartedAt  DateTime?
+
+  // Timeline Tracking
+  createdAt            DateTime  @default(now())
+  estimatedClosingDate DateTime?
+  actualClosingDate    DateTime?
+
+  // Party References
+  buyerId        String?
+  buyer          Party?  @relation("BuyerTransactions", fields: [buyerId], references: [id])
+  sellerId       String?
+  seller         Party?  @relation("SellerTransactions", fields: [sellerId], references: [id])
+  buyerAgentId   String?
+  buyerAgent     Party?  @relation("BuyerAgentTransactions", fields: [buyerAgentId], references: [id])
+  sellerAgentId  String?
+  sellerAgent    Party?  @relation("SellerAgentTransactions", fields: [sellerAgentId], references: [id])
+  loanOfficerId  String?
+  loanOfficer    Party?  @relation("LoanOfficerTransactions", fields: [loanOfficerId], references: [id])
+  titleOfficerId String?
+  titleOfficer   Party?  @relation("TitleOfficerTransactions", fields: [titleOfficerId], references: [id])
+
+  // Relationships
+  tasks     Task[]
+  documents Document[]
+
+  // Metadata
+  notes    String?
+  priority Priority @default(NORMAL)
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([currentStage])
+  @@index([createdAt])
+}
+
+model Task {
+  id String @id // e.g., "TASK-2025-001"
+
+  // Task Identification
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  taskType      TaskType
+
+  // Assignment
+  assignedTo String?
+  assignedBy String? // Party ID or "system"
+  assignedAt DateTime @default(now())
+
+  // Status and Priority
+  status   TaskStatus   @default(PENDING)
+  priority TaskPriority @default(NORMAL)
+
+  // Timeline
+  dueDate     DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  completedBy String? // Party ID
+
+  // Blocking and Dependencies
+  isBlocking    Boolean @default(false)
+  dependsOn     Json    @default("[]") // Array of task IDs
+  blockedReason String?
+
+  // Related Entities
+  relatedDocumentId String?
+  relatedStage      String? // Stage this task belongs to
+
+  // Completion Tracking
+  completionData  Json    @default("{}") // Structured result data
+  completionNotes String?
+
+  // Notifications
+  lastReminderSentAt DateTime?
+  reminderCount      Int       @default(0)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     String?
+
+  @@index([transactionId])
+  @@index([assignedTo])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model Party {
+  id String @id // e.g., "PARTY-001"
+
+  // Personal Information
+  name  String
+  email String
+  phone String?
+
+  // Role Information
+  role          PartyRole
+  company       String?
+  licenseNumber String?
+
+  // Address (Optional)
+  address String?
+  city    String?
+  state   String?
+  zipCode String?
+
+  // Metadata
+  createdAt       DateTime  @default(now())
+  lastContactedAt DateTime?
+  notes           String?
+
+  // Relationships (one party can be involved in multiple transactions)
+  buyerTransactions       Transaction[] @relation("BuyerTransactions")
+  sellerTransactions      Transaction[] @relation("SellerTransactions")
+  buyerAgentTransactions  Transaction[] @relation("BuyerAgentTransactions")
+  sellerAgentTransactions Transaction[] @relation("SellerAgentTransactions")
+  loanOfficerTransactions Transaction[] @relation("LoanOfficerTransactions")
+  titleOfficerTransactions Transaction[] @relation("TitleOfficerTransactions")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Document {
+  id String @id // e.g., "DOC-2025-001"
+
+  // Transaction Reference
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  // Document Classification
+  documentType DocumentType
+  status       DocumentStatus @default(PENDING_UPLOAD)
+
+  // File Information
+  filename  String
+  filePath  String?
+  fileSize  Int?
+  mimeType  String?
+  pageCount Int?
+
+  // Upload Tracking
+  uploadedBy String? // Party ID
+  uploadedAt DateTime?
+
+  // OCR & Extraction
+  ocrText       String? @db.Text
+  extractedData Json    @default("{}") // Structured key-value pairs
+
+  // Validation
+  validationPerformed   Boolean   @default(false)
+  validationPerformedAt DateTime?
+  validationResults     Json      @default("[]") // Array of validation results
+  validationPassed      Boolean?
+
+  // Approval
+  approvedBy      String? // Party ID or "system"
+  approvedAt      DateTime?
+  rejectedBy      String?
+  rejectedAt      DateTime?
+  rejectionReason String?
+
+  // Version Control
+  version      Int     @default(1)
+  supersededBy String? // Document ID
+  replaces     String? // Document ID
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     String?
+  tags      Json     @default("[]") // Array of tags
+
+  @@index([transactionId])
+  @@index([documentType])
+  @@index([status])
+  @@index([uploadedAt])
+}
