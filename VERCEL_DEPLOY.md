@@ -23,10 +23,12 @@ This guide will help you deploy the Accelyra Closing Platform frontend to Vercel
 3. **Configure the Project**
    - **Framework Preset**: Vite
    - **Root Directory**: `packages/frontend`
-   - **Build Command**: `pnpm build`
+   - **Build Command**: Leave default (uses vercel.json)
    - **Output Directory**: `dist`
-   - **Install Command**: `pnpm install`
+   - **Install Command**: Leave default (uses vercel.json)
    - **Node Version**: 20.x
+
+   Note: The `vercel.json` file automatically configures the build for the pnpm workspace
 
 4. **Environment Variables** (Optional - not needed for demo)
    - The app works standalone with mock data
