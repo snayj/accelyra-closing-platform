@@ -1,23 +1,13 @@
 {
-  "buildCommand": "pnpm install && pnpm build:frontend",
+  "buildCommand": "cd packages/frontend && npm run build",
   "outputDirectory": "packages/frontend/dist",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "framework": "vite",
+  "installCommand": "npm install -g pnpm && pnpm install",
+  "devCommand": "cd packages/frontend && npm run dev",
+  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
     }
   ]
 }
