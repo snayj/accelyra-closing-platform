@@ -6,7 +6,7 @@ import StageProgress from '../components/shared/StageProgress';
 import StageDetails from '../components/shared/StageDetails';
 import ActivityLog, { type ActivityEntry } from '../components/shared/ActivityLog';
 import { TransactionStage } from '../types';
-import { formatCurrency } from '../lib/utils.js';
+import { formatCurrency } from '../lib/utils';
 
 const scenarios = [
   {

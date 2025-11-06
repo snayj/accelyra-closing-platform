@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Play, History, Info } from 'lucide-react';
-import { cn } from '../../lib/utils.js';
+import { cn } from '../../lib/utils';
 
 const navigation = [
   { name: 'Welcome', href: '/', icon: Home },

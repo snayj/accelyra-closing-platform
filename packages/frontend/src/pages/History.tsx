@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Calendar, DollarSign, Home } from 'lucide-react';
 import Card, { CardContent, CardHeader, CardTitle } from '../components/ui/Card';
-import { formatCurrency, formatDate } from '../lib/utils.js';
+import { formatCurrency, formatDate } from '../lib/utils';
 
 // Mock data - will be replaced with API calls
 const mockTransactions = [
