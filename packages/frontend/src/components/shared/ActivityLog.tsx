@@ -1,6 +1,6 @@
 import { Clock, CheckCircle, AlertCircle, TrendingUp, FileText, DollarSign } from 'lucide-react';
 import Card, { CardContent, CardHeader, CardTitle } from '../ui/Card';
-import { formatDate } from '../../lib/utils';
+import { formatDate } from '../../lib/utils.js';
 
 export interface ActivityEntry {
   timestamp: string;

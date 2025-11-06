@@ -1,6 +1,6 @@
 import { TransactionStage } from '../../types';
 import { CheckCircle, Circle, Clock } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '../../lib/utils.js';
 
 interface StageProgressProps {
   currentStage: TransactionStage;
