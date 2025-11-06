@@ -14,7 +14,11 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# Only ignore Python lib directories (venv/lib, env/lib), not source lib directories
+**/venv/lib/
+**/env/lib/
+**/.venv/lib/
+**/ENV/lib/
 lib64/
 parts/
 sdist/
