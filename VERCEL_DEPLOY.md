@@ -21,14 +21,14 @@ This guide will help you deploy the Accelyra Closing Platform frontend to Vercel
    - Vercel will detect it's a monorepo
 
 3. **Configure the Project**
-   - **Framework Preset**: Vite
-   - **Root Directory**: `packages/frontend`
+   - **Framework Preset**: Other
+   - **Root Directory**: `.` (leave empty/default - do NOT set to packages/frontend)
    - **Build Command**: Leave default (uses vercel.json)
-   - **Output Directory**: `dist`
+   - **Output Directory**: Leave default (uses vercel.json)
    - **Install Command**: Leave default (uses vercel.json)
    - **Node Version**: 20.x
 
-   Note: The `vercel.json` file automatically configures the build for the pnpm workspace
+   **IMPORTANT**: Do NOT set a custom Root Directory. The `vercel.json` at project root handles the monorepo configuration automatically.
 
 4. **Environment Variables** (Optional - not needed for demo)
    - The app works standalone with mock data
