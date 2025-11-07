@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import transactionsRouter from './routes/transactions.js';
 import tasksRouter from './routes/tasks.js';
 import partiesRouter from './routes/parties.js';
+import documentsRouter from './routes/documents.js';
 
 // Load environment variables
 dotenv.config();
@@ -31,6 +32,7 @@ app.get('/health', (req, res) => {
 app.use('/api/v1/transactions', transactionsRouter);
 app.use('/api/v1/tasks', tasksRouter);
 app.use('/api/v1/parties', partiesRouter);
+app.use('/api/v1/documents', documentsRouter);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

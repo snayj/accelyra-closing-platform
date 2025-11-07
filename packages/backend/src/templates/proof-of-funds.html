@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            margin: 0.75in;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            color: #000;
+        }
+        .bank-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px;
+            margin: -20px -20px 20px -20px;
+        }
+        .bank-logo {
+            font-size: 24pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .bank-tagline {
+            font-size: 10pt;
+            opacity: 0.9;
+        }
+        .statement-title {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #1e40af;
+        }
+        .account-section {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        .account-label {
+            font-weight: bold;
+            color: #666;
+        }
+        .account-value {
+            color: #000;
+        }
+        .balance-highlight {
+            background: #eef2ff;
+            border: 2px solid #1e40af;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .balance-label {
+            font-size: 12pt;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .balance-amount {
+            font-size: 32pt;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th {
+            background: #1e40af;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .credit {
+            color: #059669;
+            font-weight: bold;
+        }
+        .debit {
+            color: #dc2626;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #1e40af;
+            font-size: 9pt;
+            color: #666;
+        }
+        .verification-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .verification-title {
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bank-header">
+        <div class="bank-logo">🏦 {{bankName}}</div>
+        <div class="bank-tagline">Your Trusted Financial Partner Since 1952</div>
+    </div>
+
+    <div class="statement-title">ACCOUNT STATEMENT</div>
+
+    <div class="account-section">
+        <div class="account-row">
+            <span class="account-label">Account Holder:</span>
+            <span class="account-value">{{accountHolder}}</span>
+        </div>
+        <div class="account-row">
+            <span class="account-label">Account Number:</span>
+            <span class="account-value">****{{accountNumber}}</span>
+        </div>
+        <div class="account-row">
+            <span class="account-label">Account Type:</span>
+            <span class="account-value">{{accountType}}</span>
+        </div>
+        <div class="account-row">
+            <span class="account-label">Statement Period:</span>
+            <span class="account-value">{{statementPeriod}}</span>
+        </div>
+        <div class="account-row">
+            <span class="account-label">Statement Date:</span>
+            <span class="account-value">{{statementDate}}</span>
+        </div>
+    </div>
+
+    <div class="balance-highlight">
+        <div class="balance-label">CURRENT AVAILABLE BALANCE</div>
+        <div class="balance-amount">${{availableBalance}}</div>
+    </div>
+
+    <div class="verification-box">
+        <div class="verification-title">⚠️ VERIFICATION FOR REAL ESTATE TRANSACTION</div>
+        <p>
+            This statement is provided as proof of funds for a real estate purchase transaction.<br>
+            <strong>Transaction ID:</strong> {{transactionId}}<br>
+            <strong>Property Address:</strong> {{propertyAddress}}<br>
+            <strong>Required Down Payment:</strong> ${{requiredAmount}}<br>
+            <strong>Verification Status:</strong> <span style="color: #059669; font-weight: bold;">✓ SUFFICIENT FUNDS VERIFIED</span>
+        </p>
+    </div>
+
+    <div class="statement-title">RECENT TRANSACTIONS</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{date1}}</td>
+                <td>Opening Balance</td>
+                <td class="credit">+${{openingBalance}}</td>
+                <td>${{openingBalance}}</td>
+            </tr>
+            <tr>
+                <td>{{date2}}</td>
+                <td>Payroll Deposit - {{employer}}</td>
+                <td class="credit">+${{deposit1}}</td>
+                <td>${{balance1}}</td>
+            </tr>
+            <tr>
+                <td>{{date3}}</td>
+                <td>ATM Withdrawal</td>
+                <td class="debit">-$200.00</td>
+                <td>${{balance2}}</td>
+            </tr>
+            <tr>
+                <td>{{date4}}</td>
+                <td>Wire Transfer - Received</td>
+                <td class="credit">+${{deposit2}}</td>
+                <td>${{balance3}}</td>
+            </tr>
+            <tr>
+                <td>{{statementDate}}</td>
+                <td><strong>Current Balance</strong></td>
+                <td></td>
+                <td><strong>${{availableBalance}}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="account-section">
+        <div class="account-row">
+            <span class="account-label">Total Deposits This Period:</span>
+            <span class="account-value credit">+${{totalDeposits}}</span>
+        </div>
+        <div class="account-row">
+            <span class="account-label">Total Withdrawals This Period:</span>
+            <span class="account-value debit">-${{totalWithdrawals}}</span>
+        </div>
+        <div class="account-row">
+            <span class="account-label">Average Daily Balance:</span>
+            <span class="account-value">${{averageBalance}}</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>{{bankName}}</strong></p>
+        <p>
+            1234 Financial Plaza, Chicago, IL 60601<br>
+            Phone: 1-800-BANKING | Website: www.{{bankWebsite}}.com<br>
+            Member FDIC | Equal Housing Lender
+        </p>
+        <p style="margin-top: 15px;">
+            <strong>NOTICE:</strong> This statement is confidential and intended solely for the account holder and authorized recipients.
+            If you have questions about your account, please contact us immediately.
+        </p>
+        <p style="margin-top: 10px; font-size: 8pt;">
+            Generated by Accelyra Closing Platform on {{generatedDate}} for real estate verification purposes.
+        </p>
+    </div>
+</body>
+</html>

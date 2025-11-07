@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            margin: 1in;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+        }
+        .title {
+            font-size: 18pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 13pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        .field-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+        .field-value {
+            display: inline-block;
+        }
+        .signature-block {
+            margin-top: 50px;
+            page-break-inside: avoid;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+            width: 250px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">REAL ESTATE PURCHASE AGREEMENT</div>
+        <div>Transaction ID: {{transactionId}}</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">I. PROPERTY INFORMATION</div>
+        <p>
+            <span class="field-label">Property Address:</span>
+            <span class="field-value">{{propertyAddress}}</span>
+        </p>
+        <p>
+            <span class="field-label">Property Type:</span>
+            <span class="field-value">{{propertyType}}</span>
+        </p>
+        <p>
+            <span class="field-label">Legal Description:</span>
+            <span class="field-value">{{legalDescription}}</span>
+        </p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">II. PURCHASE TERMS</div>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>Purchase Price</td>
+                <td>${{purchasePrice}}</td>
+            </tr>
+            <tr>
+                <td>Earnest Money Deposit</td>
+                <td>${{earnestMoney}}</td>
+            </tr>
+            <tr>
+                <td>Down Payment (20%)</td>
+                <td>${{downPayment}}</td>
+            </tr>
+            <tr>
+                <td>Loan Amount</td>
+                <td>${{loanAmount}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">III. PARTIES</div>
+        <p>
+            <span class="field-label">Buyer Name:</span>
+            <span class="field-value">{{buyerName}}</span>
+        </p>
+        <p>
+            <span class="field-label">Buyer Email:</span>
+            <span class="field-value">{{buyerEmail}}</span>
+        </p>
+        <p>
+            <span class="field-label">Seller Name:</span>
+            <span class="field-value">{{sellerName}}</span>
+        </p>
+        <p>
+            <span class="field-label">Seller Email:</span>
+            <span class="field-value">{{sellerEmail}}</span>
+        </p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">IV. CLOSING INFORMATION</div>
+        <p>
+            <span class="field-label">Contract Date:</span>
+            <span class="field-value">{{contractDate}}</span>
+        </p>
+        <p>
+            <span class="field-label">Estimated Closing Date:</span>
+            <span class="field-value">{{closingDate}}</span>
+        </p>
+        <p>
+            <span class="field-label">Possession Date:</span>
+            <span class="field-value">{{closingDate}}</span>
+        </p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">V. CONTINGENCIES</div>
+        <p>This purchase is contingent upon:</p>
+        <ul>
+            <li>Buyer obtaining financing approval within 21 days</li>
+            <li>Satisfactory home inspection within 14 days</li>
+            <li>Clear title report within 10 days</li>
+            <li>Property appraisal at or above purchase price</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <div class="section-title">VI. REPRESENTATIONS AND WARRANTIES</div>
+        <p>
+            The Seller represents and warrants that to the best of Seller's knowledge:
+        </p>
+        <ul>
+            <li>The property is free from material defects not disclosed</li>
+            <li>All systems (HVAC, plumbing, electrical) are in working order</li>
+            <li>There are no pending legal actions affecting the property</li>
+            <li>All property taxes are current and paid</li>
+        </ul>
+    </div>
+
+    <div class="signature-block">
+        <div class="section-title">VII. SIGNATURES</div>
+        <p>
+            The undersigned parties agree to the terms and conditions set forth in this Purchase Agreement.
+        </p>
+
+        <div style="margin-top: 50px;">
+            <div style="display: inline-block; width: 45%;">
+                <div class="signature-line">
+                    <strong>Buyer Signature</strong>
+                </div>
+                <p style="margin-top: 5px;">
+                    Name: {{buyerName}}<br>
+                    Date: {{contractDate}}
+                </p>
+            </div>
+
+            <div style="display: inline-block; width: 45%; margin-left: 5%;">
+                <div class="signature-line">
+                    <strong>Seller Signature</strong>
+                </div>
+                <p style="margin-top: 5px;">
+                    Name: {{sellerName}}<br>
+                    Date: {{contractDate}}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ccc; font-size: 9pt; color: #666;">
+        <p>
+            <strong>NOTICE:</strong> This is a legally binding contract. If not understood, seek competent legal advice before signing.
+        </p>
+        <p>
+            Generated by Accelyra Closing Platform on {{generatedDate}}
+        </p>
+    </div>
+</body>
+</html>
