@@ -1,21 +1,28 @@
 # Force Node.js/pnpm build (ignore Python in legacy/)
+# IMPORTANT: This is a Node.js TypeScript backend, NOT Python
 providers = ["node"]
 
+[variables]
+NODE_ENV = "production"
+
 [phases.setup]
-nixPkgs = ["nodejs-20_x", "pnpm"]
+nixPkgs = ["nodejs-20_x", "pnpm", "chromium"]
+nixLibs = ["nss", "freetype", "harfbuzz", "ca-certificates", "fontconfig"]
 
 [phases.install]
 cmds = [
-  "echo 'Installing dependencies...'",
+  "echo '=== Installing Node.js dependencies ==='",
   "pnpm install --frozen-lockfile"
 ]
 
 [phases.build]
 cmds = [
-  "echo 'Building backend...'",
+  "echo '=== Building TypeScript backend ==='",
   "cd packages/backend",
   "pnpm prisma generate",
-  "pnpm run build"
+  "pnpm run build",
+  "echo '=== Build complete ==='",
+  "ls -la dist/"
 ]
 
 [start]

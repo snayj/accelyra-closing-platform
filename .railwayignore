@@ -1,0 +1,24 @@
+# Ignore Python/Streamlit legacy code
+legacy/
+requirements.txt
+*.py
+__pycache__/
+.venv/
+env/
+venv/
+
+# Ignore frontend (separate deployment)
+packages/frontend/
+
+# Ignore scripts
+scripts/
+
+# Ignore docs
+*.md
+!README.md
+
+# Ignore config files not needed for backend
+.gitignore
+.prettierrc
+.eslintrc
+render.yaml
