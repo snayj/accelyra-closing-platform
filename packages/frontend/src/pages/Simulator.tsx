@@ -5,6 +5,7 @@ import Card, { CardContent, CardHeader, CardTitle, CardDescription } from '../co
 import StageProgress from '../components/shared/StageProgress';
 import StageDetails from '../components/shared/StageDetails';
 import ActivityLog, { type ActivityEntry } from '../components/shared/ActivityLog';
+import DocumentManager from '../components/shared/DocumentManager';
 import { TransactionStage } from '../types';
 import { formatCurrency } from '../lib/utils';
 
@@ -443,6 +444,11 @@ export default function Simulator() {
 
           {/* Activity Log */}
           <ActivityLog activities={activities} />
+
+          {/* Document Generation & OCR */}
+          {transactionId && (
+            <DocumentManager transactionId={transactionId} />
+          )}
         </div>
       )}
     </div>
