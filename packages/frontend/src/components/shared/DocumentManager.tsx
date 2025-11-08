@@ -38,7 +38,7 @@ const DOCUMENT_TYPE_LABELS: Record<string, string> = {
   CLOSING_DISCLOSURE: 'Closing Disclosure',
 };
 
-export default function DocumentManager({ transactionId, apiBaseUrl = 'http://localhost:3001/api/v1' }: DocumentManagerProps) {
+export default function DocumentManager({ transactionId, apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1' }: DocumentManagerProps) {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [processingDoc, setProcessingDoc] = useState<string | null>(null);
