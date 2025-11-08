@@ -1,13 +1,18 @@
+# Force Node.js/pnpm build (ignore Python in legacy/)
+providers = ["node"]
+
 [phases.setup]
 nixPkgs = ["nodejs-20_x", "pnpm"]
 
 [phases.install]
 cmds = [
+  "echo 'Installing dependencies...'",
   "pnpm install --frozen-lockfile"
 ]
 
 [phases.build]
 cmds = [
+  "echo 'Building backend...'",
   "cd packages/backend",
   "pnpm prisma generate",
   "pnpm run build"
